@@ -7,6 +7,10 @@ const randoms = [
   [6, 7]
 ]
 
+const nonusedvar = 0
+
+console.log('This is a log message')
+
 function App() {
   return (
     <div className="relative overflow-hidden bg-white">
