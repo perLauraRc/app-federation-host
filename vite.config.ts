@@ -14,21 +14,34 @@ export default defineConfig({
     federation({
       name: 'host-app',
       remotes: {
-        remoteApp: 'http://localhost:5174/assets/remoteEntry.js'
+        'remoteApp': 'http://app-federation-remote:5174/assets/remoteEntry.js'
       },
       shared: ['react', 'react-dom']
     })
   ],
-  test: {
-    globals: true,
-    environment: 'happy-dom',
-    setupFiles: '.vitest/setup',
-    include: ['**/test.{ts,tsx}']
-  },
+  // test: {
+  //   globals: true,
+  //   environment: 'happy-dom',
+  //   setupFiles: '.vitest/setup',
+  //   include: ['**/test.{ts,tsx}']
+  // },
+  // preview: {
+  //   host: 'localhost',
+  //   port: 5173,
+  //   strictPort: true,
+  // },
   server: {
     host: 'app-federation',
     port: 5173,
-    open: true
+    open: true,
+    // cors: {
+    //   origin: '*',
+    //   methods: ['GET','POST','PUT','DELETE','PATCH','OPTIONS'],
+    //   allowedHeaders: ['X-Requested-With', 'Content-Type', 'Authorization']
+    // },
+    // headers: {
+    //   "Access-Control-Allow-Origin": "*"
+    // }
   },
   build: {
     modulePreload: false,

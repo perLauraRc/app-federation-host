@@ -1,11 +1,12 @@
 import { defineConfig } from 'eslint/config'
 import react from 'eslint-plugin-react'
 import reactHooks from 'eslint-plugin-react-hooks'
+import typescriptParser from '@typescript-eslint/parser'
 import typescriptEslint from '@typescript-eslint/eslint-plugin'
 import tailwindcss from 'eslint-plugin-tailwindcss'
 import { fixupPluginRules } from '@eslint/compat'
 import globals from 'globals'
-import tsParser from '@typescript-eslint/parser'
+
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import js from '@eslint/js'
@@ -41,7 +42,7 @@ export default defineConfig([
         ...globals.jest,
         ...globals.node
       },
-      parser: tsParser,
+      parser: typescriptParser,
       ecmaVersion: 11,
       sourceType: 'module',
       parserOptions: {

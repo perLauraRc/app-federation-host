@@ -1,5 +1,5 @@
 {
-  "name": "reactjs-vite-tailwindcss-boilerplate",
+  "name": "app-federation-host",
   "description": "Scaffolding a Vite Project with Vite, React 18, TypeScript, Vitest, Testing Library, TailwindCSS 3, Eslint and Prettier using the following boilerplate build: https://github.com/joaopaulomoraes/reactjs-vite-tailwindcss-boilerplate",
   "version": "0.1.0",
   "private": true,
@@ -20,6 +20,7 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "lint": "eslint src --max-warnings=0",
+    "preview": "vite preview",
     "typecheck": "tsc --project tsconfig.json --noEmit"
   },
   "dependencies": {
