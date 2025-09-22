@@ -1,14 +1,37 @@
+/* Shared with remote app */
 @import url('https://rsms.me/inter/inter.css');
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.google.com/share?selection.family=Anton|Roboto:ital,wght@0,100..900;1,100..900');
 @import 'tailwindcss';
 
 @theme {
-  --font-sans: InterVariable, sans-serif; /* Inter font is used as the default font named font-sans */
-  --font-roboto: 'Roboto', 'sans-serif';
-
-  --border-my-grid: 1px solid rgba(0, 0, 0, 0.12);
+  --font-inter: InterVariable, sans-serif;
+  --font-roboto: Roboto, sans-serif;
+  /* HER THEME */
+  --color-my-light-brown-0: #bc8c73;
+  --color-my-dark-brown-0: #652d10;
+  --color-my-red-0: #c04738;
+  --color-my-gray-0: #796d5b;
+  --color-my-pink-0: #c35e6c;
+  /* FANGORIA THEME */
+  --color-white: #f8edeb;
+  --color-black: #020609;
+  --color-powder-blue: #a7b4ce;
+  --color-moonstone: #069fb9;
+  --color-english-violet: #624d74;
+  --color-prussian-blue: #033951;
+  --color-byzantium: #873272;
+  --color-violet: #4f47e6;
+  /* LOGO COLORS */
+  --color-tiktok-red: #fe2c55;
+  /* Z-INDEXES */
+  --z-index-gridCellHovered: 10;
+  /* --drop-shadow-svg: drop-shadow-[0 0 2rem rgba(197, 213, 22, 0.35)] p-8; /* NOT WORKING */
 }
 
-/* V4 new config directive to load explicitly old V3 JS config file for backwards compatibility */
-/* In case the old tailwind directives are not needed anymore, just remove this line and the 'tailwind.config.js' file */
+:root {
+  -webkit-font-smoothing: antialiased; /* For WebKit browsers (e.g., Chrome, Safari) */
+  -moz-osx-font-smoothing: grayscale; /* For Firefox on macOS */
+  text-rendering: optimizeLegibility; /* General optimization for legibility */
+}
+
 @config "../tailwind.config.ts";

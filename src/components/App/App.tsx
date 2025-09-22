@@ -1,25 +1,47 @@
-import Avatar from 'components/Avatar'
-
 import './App.css'
 import Background from 'remoteApp/Background'
-import theXImage from '../../assets/thex.svg'
+import GalleryCell from 'remoteApp/GalleryCell'
+import thex from '@/assets/thex.svg'
+import logo from '@/assets/logo.svg'
+import CircleProgress from 'remoteApp/CircleProgress'
 
 const App = () => {
   return (
-    // <div className="font-roboto bg-gray-900 py-24 sm:py-32" id="root">
-    <div
-      className="border-my-grid font-roboto rounded-lg bg-linear-to-t from-sky-500 to-indigo-500 border-4 border-[#8d4081]"
-      id="app-container"
-    >
-      <Background size="full" src={theXImage} />
-      <div className="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
-        <h2 className="text-center text-base/7 font-semibold text-indigo-400">
-          thex
-        </h2>
-        <p className="mx-auto mt-2 max-w-lg text-center text-4xl font-semibold tracking-tight text-balance text-white sm:text-5xl">
-          Everything you need to deploy your app
-        </p>
-        <div className="mt-10 grid gap-4 sm:mt-16 lg:grid-cols-3 lg:grid-rows-2">
+    <div className="font-roboto relative">
+      <Background position="absolute" size="full" src={thex} />
+      <div className="relative mx-auto max-w-4xl px-6 lg:max-w-7xl lg:px-8 text-2xl">
+        <h1 className="max-w-(--breakpoint-sm) text-[2.5rem]/13 lg:text-[5rem]/20 tracking-tight text-pretty">
+          <span className="relative inline-block bg-tiktok-red -inset-1 -skew-x-4 -skew-y-3 font-[600] pt-2 pr-4 pb-2 pl-4">
+            TheX
+            <span className="absolute left-1 top-1 inline-block text-white pt-2 pr-4 pb-2 pl-4 font-[600] z-2">
+              TheX
+            </span>
+            <span className="absolute left-0 top-0 inline-block text-black pt-2 pr-4 pb-2 pl-4 font-[600]] z-3">
+              TheX
+            </span>
+          </span>
+        </h1>
+
+        <div className="mt-6 lg:mt-8 grid gap-3 lg:gap-4 lg:grid-cols-3 lg:grid-rows-2">
+          <div className="border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
+            <GalleryCell></GalleryCell>
+          </div>
+          <div>
+            <CircleProgress
+              ariaLabel="Profile completion"
+              bgColor="--color-white"
+              color="--color-violet"
+              size={150}
+              strokeWidth={32}
+              value={17}
+            />
+          </div>
+          <div>
+            <img src={logo} className="w-full max-lg:max-w-xs" />
+          </div>
+        </div>
+
+        <div className="mt-10 grid gap-4 sm:mt-16 lg:grid-cols-3 lg:grid-rows-2 hidden">
           <div className="relative lg:row-span-2">
             <div className="absolute inset-px rounded-lg bg-gray-800 lg:rounded-l-4xl" />
             <div className="relative flex h-full flex-col overflow-hidden rounded-[calc(var(--radius-lg)+1px)] lg:rounded-l-[calc(2rem+1px)]">
@@ -122,6 +144,7 @@ const App = () => {
           </div>
         </div>
       </div>
+      s
     </div>
   )
 }

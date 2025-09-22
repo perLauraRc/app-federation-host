@@ -4,12 +4,12 @@ This document provides instructions and guidelines for GitHub Copilot when worki
 
 ## Project Overview
 
-This is a remote application for a micro-frontend architecture built with:
+This is a host application for a micro-frontend architecture built with:
 
 - Vite
 - React 18
 - TypeScript
-- TailwindCSS 3
+- TailwindCSS 4
 - Module Federation
 
 ## Coding Standards
@@ -38,6 +38,7 @@ This is a remote application for a micro-frontend architecture built with:
       ComponentName.test.tsx
       ComponentName.styles.css
   ```
+  - Automatically update the index.ts file in the components folder to export new added components
 
 ### Styling
 
