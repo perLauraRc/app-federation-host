@@ -6,7 +6,15 @@ export default {
     '../remote/src/components/**/*.{js,jsx,ts,tsx}' // Include remote app exposed components so Tailwind generates utility classes at build time based on the files it scans
   ],
   theme: {
-    extend: {}
+    extend: {
+      screens: {
+        sm: '640px',
+        md: '768px',
+        lg: '1024px',
+        xl: '1280px',
+        '2xl': '1536px'
+      }
+    }
   },
   plugins: []
 }

@@ -1,6 +1,7 @@
 /* Shared with remote app */
 @import url('https://rsms.me/inter/inter.css');
-@import url('https://fonts.google.com/share?selection.family=Anton|Roboto:ital,wght@0,100..900;1,100..900');
+/* Google Font Roboto (weight 100-900, italic 0-1, width 100) */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 @import 'tailwindcss';
 
 @theme {
@@ -17,6 +18,7 @@
   --color-black: #020609;
   --color-powder-blue: #a7b4ce;
   --color-moonstone: #069fb9;
+  --color-cerulean: #325877;
   --color-english-violet: #624d74;
   --color-prussian-blue: #033951;
   --color-byzantium: #873272;
@@ -26,6 +28,8 @@
   /* Z-INDEXES */
   --z-index-gridCellHovered: 10;
   /* --drop-shadow-svg: drop-shadow-[0 0 2rem rgba(197, 213, 22, 0.35)] p-8; /* NOT WORKING */
+  /* PAGE LAYOUT */
+  --padding-w-page: 2rem;
 }
 
 :root {

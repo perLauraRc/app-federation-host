@@ -14,7 +14,7 @@ export default defineConfig({
     federation({
       name: 'host-app',
       remotes: {
-        'remoteApp': 'http://app-federation-remote:5174/assets/remoteEntry.js'
+        remoteApp: 'http://app-federation-remote:5174/assets/remoteEntry.js'
       },
       shared: ['react', 'react-dom']
     })
@@ -33,15 +33,27 @@ export default defineConfig({
   server: {
     host: 'app-federation',
     port: 5173,
+    strictPort: true, // Exits if the port is already in use
     open: true,
-    // cors: {
-    //   origin: '*',
-    //   methods: ['GET','POST','PUT','DELETE','PATCH','OPTIONS'],
-    //   allowedHeaders: ['X-Requested-With', 'Content-Type', 'Authorization']
-    // },
-    // headers: {
-    //   "Access-Control-Allow-Origin": "*"
-    // }
+    proxy: {
+      '/api': {
+        target: 'https://api.football-data.org',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+        secure: false, // in case of using https with an invalid certificate,
+        configure: (proxy, _options) => {
+          proxy.on('error', (err, _req, _res) => {
+            console.log('proxy error', err)
+          })
+          proxy.on('proxyReq', (proxyReq, req, _res) => {
+            console.log('Sending Request:', req.method, req.url)
+          })
+          proxy.on('proxyRes', (proxyRes, req, _res) => {
+            console.log('Received Response from:', req.url, proxyRes.statusCode)
+          })
+        }
+      }
+    }
   },
   build: {
     modulePreload: false,
