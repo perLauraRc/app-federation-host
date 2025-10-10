@@ -1,27 +1,37 @@
 import { useEffect, useRef, useState } from 'react'
 
 import CircleProgress from 'remoteApp/CircleProgress'
+import FixturesCarousel from 'remoteApp/FixturesCarousel'
 import GalleryCell from 'remoteApp/GalleryCell'
 import ErrorPage from 'remoteApp/ErrorPage'
 
-import type { APIError, MatchStatus } from '@/types'
+import type { APIError, Match, MatchStatus } from '@/types'
 
 import { classNames } from '@/utils/classNames'
 import { fetchRequest } from '@/services/fetchApiService'
 import {
-  CompetitionIdEnum,
+  CompetitionIds,
   EndpointPath,
   MatchStatuses
 } from '@/constants/restApi'
 import { GetCompetitionMatchesApiResponse } from '@/types/API/getCompetitionMatchesApiResponse'
 import FixturesDisplay from '@/components/FixturesDisplay/FixturesDisplay'
+import {
+  GRID_GAP_LG,
+  GRID_GAP_MD,
+  GRID_ITEM_BORDER_WIDTH,
+  GRID_ITEM_PADDING_LG,
+  GRID_ITEM_PADDING_MD
+} from '@/constants/layout'
+import { useMediaQuery } from '@/hooks/useMediaQuery'
 
 const gridClassName =
   'mt-6 lg:mt-8 grid gap-4 lg:gap-6 lg:grid-cols-3 lg:grid-rows-2'
-const gridItemClassName =
-  'p-6 lg:p-8 bg-cerulean/20 border-8 border-solid border-cerulean/50'
+const gridItemClassName = `flex justify-center items-center p-${GRID_ITEM_PADDING_MD} lg:p-${GRID_ITEM_PADDING_LG} bg-cerulean/20 border-6 border-solid border-cerulean/50`
 
 const Home = () => {
+  const isLGMediaQuery = useMediaQuery('(min-width: 1024px)')
+  const ENV = import.meta.env.REACT_random_Var
   const [competitionProgress, setCompetitionProgress] = useState<
     GetCompetitionMatchesApiResponse['resultSet'] | null
   >(null)
@@ -33,18 +43,23 @@ const Home = () => {
   >(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<APIError | null>(null)
+  const gridItemSquareRef = useRef<HTMLDivElement>(null)
   const circleProgressRef = useRef<HTMLDivElement>(null)
+  const [gridItemFullHeight, setGridItemFullHeight] = useState(0)
   const [circleProgressSize, setCircleProgressSize] = useState(0)
+
+  const gridItemBorderBoxPaddingPlusBorder =
+    GRID_ITEM_BORDER_WIDTH * 2 +
+    (isLGMediaQuery ? GRID_ITEM_PADDING_LG : GRID_ITEM_PADDING_MD) * 4 * 2
 
   useEffect(() => {
     const fetchGridData = async () => {
       try {
         const data: GetCompetitionMatchesApiResponse = await fetchRequest([
           EndpointPath.Competitions,
-          CompetitionIdEnum.CL,
+          CompetitionIds.CL,
           EndpointPath.Matches
         ])
-        debugger
         setCompetitionProgress(data.resultSet)
         setCompetitionData(data.competition)
         setMatchesData(data.matches)
@@ -67,17 +82,51 @@ const Home = () => {
 
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
-        const { width: circleProgressRefWidth } = entry.contentRect
-        if (circleProgressRefWidth > 0) {
-          setCircleProgressSize(circleProgressRefWidth - 64) // Subtracting padding
+        const { width: circleProgressWidth } = entry.contentRect
+
+        if (circleProgressWidth > 0) {
+          setCircleProgressSize(circleProgressWidth)
         }
       }
     })
 
-    resizeObserver.observe(circleProgressRef.current)
+    resizeObserver.observe(observeTarget)
 
     return () => resizeObserver.disconnect()
   }, [competitionProgress])
+
+  useEffect(() => {
+    const observeTarget = gridItemSquareRef.current
+    if (!observeTarget || !matchesData) return
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { height: gridItemSquareHeight } = entry.contentRect
+
+        if (gridItemSquareHeight > 0) {
+          // Calculates the height of a grid item which spans 3 (LG) or 4 (MD) rows plus gaps
+          const gridItemFullHeight = isLGMediaQuery
+            ? (gridItemSquareHeight + gridItemBorderBoxPaddingPlusBorder) * 3 +
+              GRID_GAP_LG * 4 * 2 // Media query screen bigger than 1024px renders a grid with 3 rows
+            : (gridItemSquareHeight + gridItemBorderBoxPaddingPlusBorder) * 4 +
+              GRID_GAP_MD * 4 * 3 // Media query screen smaller than 1024px renders a grid with 4 rows
+          console.log(
+            'gridItemSquareHeight observed:',
+            gridItemSquareHeight,
+            'isLGMediaQuery:',
+            isLGMediaQuery,
+            'gridItemFullHeight calculated:',
+            gridItemFullHeight
+          )
+          setGridItemFullHeight(gridItemFullHeight)
+        }
+      }
+    })
+
+    resizeObserver.observe(observeTarget)
+
+    return () => resizeObserver.disconnect()
+  }, [matchesData])
 
   if (error) {
     return (
@@ -93,9 +142,11 @@ const Home = () => {
   }
 
   return (
-    <div className="mx-auto max-w-4xl px-6 lg:max-w-7xl lg:px-8">
-      <h1 className="max-w-(--breakpoint-sm) text-[2.5rem]/13 lg:text-[5rem]/20 tracking-tight text-pretty">
-        <span className="relative inline-block bg-tiktok-red -inset-1 -skew-x-4 -skew-y-3 font-[600] pt-2 pr-4 pb-2 pl-4">
+    <div
+      className={`mx-auto max-w-4xl px-${GRID_ITEM_PADDING_MD} lg:max-w-7xl lg:px-${GRID_ITEM_PADDING_LG}`}
+    >
+      <h1 className="max-w-(--breakpoint-sm) text-[2.5rem]/13 lg:text-[5rem]/20 tracking-tight text-pretty mt-2">
+        <span className="relative inline-block bg-tiktok-red -inset-1 -skew-x-4 -skew-y-5 font-[600] pt-2 pr-4 pb-2 pl-4">
           TheX
           <span className="absolute left-1 top-1 inline-block text-white pt-2 pr-4 pb-2 pl-4 font-[600] z-2">
             TheX
@@ -106,26 +157,39 @@ const Home = () => {
         </span>
       </h1>
 
+      <h1>{`HOLA :: ${ENV}`}</h1>
+
       {loading ? (
         <div className="p-8 text-white text-9xl">Loading matchesData...</div>
       ) : (
-        <div className="mt-6 lg:mt-8 grid gap-4 lg:gap-6 lg:grid-cols-3 lg:auto-rows-auto">
+        <div
+          className={`mt-6 lg:mt-8 grid gap-${GRID_GAP_MD} lg:gap-${GRID_GAP_LG} grid-cols-2 lg:grid-cols-3`}
+        >
           <div
             className={classNames(
               gridItemClassName,
-              'flex justify-center items-center',
-              'col-start-1 col-end-2 row-start-1 row-end-2 '
+              'col-start-1 col-end-2 row-start-1 row-end-2',
+              'aspect-square'
             )}
+            ref={gridItemSquareRef}
           >
-            <p>This is box A</p>
+            {matchesData ? (
+              <FixturesCarousel
+                fixtures={matchesData as Match[]}
+                visibleCount={1}
+              />
+            ) : (
+              'No fixtures could be loaded.'
+            )}
           </div>
           {competitionProgress && (
             <div
               ref={circleProgressRef}
               className={classNames(
                 gridItemClassName,
-                'flex justify-center items-center',
-                'col-start-2 col-end-3 row-start-1 row-end-2 '
+                'col-start-1 col-end-2 row-start-2 row-end-3',
+                'lg:col-start-2 lg:col-end-3 lg:row-start-1 lg:row-end-2',
+                'aspect-square'
               )}
             >
               <CircleProgress
@@ -140,53 +204,76 @@ const Home = () => {
               />
             </div>
           )}
-          <div
-            className={classNames(
-              gridItemClassName,
-              'flex justify-center items-center'
-            )}
-          >
+          <div className={classNames(gridItemClassName, 'aspect-square')}>
             <p>This is box B</p>
           </div>
           <div
             className={classNames(
               gridItemClassName,
-              'flex justify-center items-center'
+              'aspect-square',
+              'items-start'
             )}
           >
-            <div className="w-full aspect-square bg-violet">
-              This is box C SQUARED
+            <div className="w-full max-h-full overflow-hidden">
+              <p>
+                This is box C.
+                <br />
+                <br />
+                <span>
+                  Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eius
+                  in fugiat rem maxime nihil officiis corrupti nostrum
+                  asperiores culpa odio esse ducimus ratione, facilis magni
+                  dolores nesciunt! Commodi, provident hic. Lorem ipsum dolor,
+                  sit amet consectetur adipisicing elit. Eius in fugiat rem
+                  maxime nihil officiis corrupti nostrum asperiores culpa odio
+                  esse ducimus ratione, facilis magni dolores nesciunt! Commodi,
+                  provident hic. Lorem ipsum dolor, sit amet consectetur
+                  adipisicing elit. Eius in fugiat rem maxime nihil officiis
+                  corrupti nostrum asperiores culpa odio esse ducimus ratione,
+                  facilis magni dolores nesciunt! Commodi, provident hic.
+                </span>
+              </p>
             </div>
           </div>
-          <div
-            className={classNames(
-              gridItemClassName,
-              'flex justify-center items-center'
-            )}
-          >
+          <div className={classNames(gridItemClassName, 'aspect-square')}>
             This is box D
           </div>
           <div
             className={classNames(
               gridItemClassName,
-              'flex justify-center items-center',
-              'col-start-3 col-end-4 row-start-1 row-end-4'
+              'items-start',
+              'col-start-2 col-end-3 row-start-1 row-end-5',
+              'lg:col-start-3 lg:col-end-4 lg:row-start-1 lg:row-end-4'
             )}
           >
-            {matchesData ? (
-              <FixturesDisplay
-                fixtures={matchesData.filter(
-                  (
-                    match: GetCompetitionMatchesApiResponse['matches'][number]
-                  ) =>
-                    match.status === MatchStatuses.TIMED ||
-                    match.status === MatchStatuses.LIVE ||
-                    match.status === MatchStatuses.IN_PLAY
-                )}
-              />
-            ) : (
-              'No fixtures could be loaded.'
-            )}
+            <div
+              className="overflow-hidden"
+              style={{
+                maxHeight: `${
+                  gridItemFullHeight - gridItemBorderBoxPaddingPlusBorder
+                }px`
+              }}
+            >
+              {matchesData ? (
+                <FixturesDisplay
+                  fixtures={matchesData.filter(
+                    (
+                      match: GetCompetitionMatchesApiResponse['matches'][number]
+                    ) =>
+                      match.status === MatchStatuses.TIMED ||
+                      match.status === MatchStatuses.SCHEDULED ||
+                      match.status === MatchStatuses.IN_PLAY ||
+                      match.status === MatchStatuses.LIVE ||
+                      match.status === MatchStatuses.FINISHED
+                  )}
+                />
+              ) : (
+                'No fixtures could be loaded.'
+              )}
+            </div>
+          </div>
+          <div className={classNames(gridItemClassName, 'aspect-square')}>
+            <p>This is box E</p>
           </div>
         </div>
       )}

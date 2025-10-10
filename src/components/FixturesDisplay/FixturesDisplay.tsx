@@ -7,7 +7,7 @@ export interface FixturesDisplayProps {
 
 const FixturesDisplay = ({ fixtures }: FixturesDisplayProps) => {
   return (
-    <div className="w-full h-full flex max-h-full overflow-hidden self-start">
+    <div className="flex h-full flex-col">
       <h1>Fixtures</h1>
       {!fixtures.length ? (
         'No fixtures scheduled in the few days.'

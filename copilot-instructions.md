@@ -4,14 +4,14 @@ This document provides instructions and guidelines for GitHub Copilot when worki
 
 ## Project Overview
 
-This is a host application for a micro-frontend architecture built with:
+This is the host application for a micro-frontend architecture built with:
 
 - Vite
 - React 18
 - TypeScript
 - TailwindCSS 4
 - Module Federation
-- Vitest and Testing Library for testing
+- Vitest and React Testing Library for testing
 
 ## Coding Standards
 
@@ -42,6 +42,12 @@ This is a host application for a micro-frontend architecture built with:
   ```
 
   - Automatically update the index.ts file in the components folder to export new added components
+
+### Type Safety
+
+•⁠ ⁠Use TypeScript types/interfaces
+•⁠ ⁠Prefer type annotations for component props
+•⁠ ⁠Do not use React.FC for functional components, use Direct Props Annotation instead
 
 ### Styling
 

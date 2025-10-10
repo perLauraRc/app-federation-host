@@ -1,14 +1,14 @@
-export type ScoreTime = {
+export type PartialScore = {
   away: number
   home: number
 }
 
 export type Score = {
   duration: string
-  extraTime?: ScoreTime
-  fullTime: ScoreTime
-  halfTime: ScoreTime
-  penalties?: ScoreTime
-  regularTime?: ScoreTime
+  extraTime?: PartialScore
+  fullTime: PartialScore
+  halfTime: PartialScore
+  penalties?: PartialScore
+  regularTime?: PartialScore
   winner: string
 }

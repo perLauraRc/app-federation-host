@@ -1,4 +1,4 @@
-import type { MatchStatus } from '@/types'
+import type { CompetitionId, MatchStatus } from '@/types'
 
 // Free Football API https://www.football-data.org/
 // Documentation https://www.football-data.org/documentation/quickstart
@@ -6,31 +6,31 @@ export const apiDomain = 'https://api.football-data.org'
 export const apiToken = '0219878c3f3a42809be6125fef967e80' // My personal authorization API Token
 export const urlPathnameBase = '/v4'
 
-export enum CompetitionIdEnum {
+export const CompetitionIds: Record<CompetitionId, string> = {
   /** Bundesliga */
-  BL1 = 'BL1',
+  BL1: 'BL1',
   /** Campeonato Brasileiro Série A */
-  BSA = 'BSA',
+  BSA: 'BSA',
   /** UEFA Champions League */
-  CL = 'CL',
+  CL: 'CL',
   /** Eredivisie */
-  DED = 'DED',
+  DED: 'DED',
   /** Championship */
-  ELC = 'ELC',
+  ELC: 'ELC',
   /** European Championship */
-  EC = 'EC',
+  EC: 'EC',
   /** Ligue 1 */
-  FL1 = 'FL1',
+  FL1: 'FL1',
   /** Primera División */
-  PD = 'PD',
+  PD: 'PD',
   /** Premier League */
-  PL = 'PL',
+  PL: 'PL',
   /** Primeira Liga */
-  PPL = 'PPL',
+  PPL: 'PPL',
   /** Serie A */
-  SA = 'SA',
+  SA: 'SA',
   /** FIFA World Cup */
-  WC = 'WC'
+  WC: 'WC'
 }
 
 export const MatchStatuses: Record<MatchStatus, string> = {

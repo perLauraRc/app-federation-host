@@ -10,6 +10,7 @@ import type { APIError } from '@/types'
 import Home from '@/components/pages/Home/Home'
 
 const App = () => {
+  console.log('App component rendered')
   const [error, setError] = useState<APIError | null>(null)
 
   if (error) {
