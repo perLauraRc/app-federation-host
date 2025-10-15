@@ -7,7 +7,7 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import typescriptEslint from 'typescript-eslint'
 // import typescriptEslintParser from '@typescript-eslint/parser'
 import tailwindcss from 'eslint-plugin-tailwindcss'
-// import eslintConfigPrettier from 'eslint-config-prettier/flat'
+import eslintConfigPrettier from 'eslint-config-prettier/flat'
 import { globalIgnores } from 'eslint/config'
 import fs from 'node:fs'
 import path from 'node:path'
@@ -102,8 +102,9 @@ export default defineConfig([
         skipClassAttribute: false,
         whitelist: [
           ...whitelistColorClasses,
+          'font\\-inter',
           'font\\-roboto',
-          'font\\-inter'
+          'z-gridCellHovered'
           ], // e.g. to avoid "no-custom-classname" linting error for classes that are generated dynamically or contain custom properties
         tags: [], // can be set to e.g. ['tw'] for use in tw`bg-blue`
         classRegex: '^class(Name)?$' // can be modified to support custom attributes. E.g. "^tw$" for `twin.macro`
@@ -135,7 +136,6 @@ export default defineConfig([
     'mocks',
     'coverage',
     '**/*.css'
-  ])
-  // TODO: Stablish setup of prettier cons vs advantages
-  // eslintConfigPrettier
+  ]),
+  eslintConfigPrettier
 ])
