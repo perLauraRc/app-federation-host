@@ -7,7 +7,9 @@ const ImportMap = () => {
       origin: {
         x: e.pageX / window.innerWidth,
         y: (e.pageY + 20) / window.innerHeight
-      }
+      },
+      zIndex: 9999,
+      colors: ['#8b5cf6', '#a78bfa', '#c4b5fd', '#e0e7ff']
     })
   }
 
