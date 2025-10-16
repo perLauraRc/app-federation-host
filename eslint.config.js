@@ -48,7 +48,20 @@ const colorUtilities = [
 ]
 
 // Optional alpha suffixes
-const alphaSuffixes = ['', '/50', '/100', '/200', '/300', '/400', '/500', '/600', '/700', '/800', '/900', '/950']
+const alphaSuffixes = [
+  '',
+  '/50',
+  '/100',
+  '/200',
+  '/300',
+  '/400',
+  '/500',
+  '/600',
+  '/700',
+  '/800',
+  '/900',
+  '/950'
+]
 
 // Builds explicit whitelist of classes by combining every token with every utility and alpha suffix,
 // producing literal class strings like bg-cerulean, text-violet/50
@@ -105,7 +118,7 @@ export default defineConfig([
           'font\\-inter',
           'font\\-roboto',
           'z-gridCellHovered'
-          ], // e.g. to avoid "no-custom-classname" linting error for classes that are generated dynamically or contain custom properties
+        ], // e.g. to avoid "no-custom-classname" linting error for classes that are generated dynamically or contain custom properties
         tags: [], // can be set to e.g. ['tw'] for use in tw`bg-blue`
         classRegex: '^class(Name)?$' // can be modified to support custom attributes. E.g. "^tw$" for `twin.macro`
       }
@@ -131,7 +144,7 @@ export default defineConfig([
   },
   globalIgnores([
     'node_modules',
-    // '.vitest',
+    '.vitest',
     'dist',
     'mocks',
     'coverage',

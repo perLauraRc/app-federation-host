@@ -1,8 +1,27 @@
-import confetti from 'https://esm.sh/canvas-confetti@1.6.0'
+import { useEffect, useState } from 'react'
+
+type ConfettiFunction = (options?: unknown) => void
 
 const ImportMap = () => {
+  const [confettiFn, setConfettiFn] = useState<ConfettiFunction | null>(null)
+
+  useEffect(() => {
+    const loadConfettiModule = async () => {
+      try {
+        const module = await import('https://esm.sh/canvas-confetti@1.6.0')
+        setConfettiFn(() => module.default)
+      } catch (err) {
+        console.error('Failed to load confetti module', err)
+      }
+    }
+
+    loadConfettiModule()
+  }, [])
+
   const showConfetti = (e: React.MouseEvent) => {
-    confetti({
+    if (!confettiFn) return
+
+    confettiFn?.({
       particleCount: 5,
       origin: {
         x: e.pageX / window.innerWidth,

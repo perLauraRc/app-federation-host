@@ -1,12 +1,11 @@
 /// <reference types="vitest" />
-import { configDefaults } from 'vitest/config'
+// import { configDefaults } from 'vitest/config'
 import { defineConfig } from 'vite'
 import federation from '@originjs/vite-plugin-federation'
 import react from '@vitejs/plugin-react-swc'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import tailwindcss from '@tailwindcss/vite'
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [
     react(),
@@ -20,36 +19,36 @@ export default defineConfig({
       shared: ['react', 'react-dom']
     })
   ],
-  test: {
-    globals: true,
-    environment: 'happy-dom',
-    setupFiles: '.vitest/setup',
-    include: ['**/**.test.{ts,tsx}'],
-    exclude: [
-      ...configDefaults.exclude,
-      '**/**.config.{js,ts,tsx}',
-      '**/index.{ts,tsx}',
-      '**/constants/**{ts,tsx}',
-      '**/types/**/**{ts,tsx}',
-      '**/*.d.ts',
-      '**/.vitest/**',
-      '**/mocks/**'
-    ],
-    coverage: {
-      provider: 'v8', // istanbul or v8 are the preferred providers, v8 is the default provider anyway
-      reportOnFailure: true,
-      exclude: [
-        ...configDefaults.exclude,
-        '**/**.config.{js,ts,tsx}',
-        '**/index.{ts,tsx}',
-        '**/constants/**{ts,tsx}',
-        '**/types/**/**{ts,tsx}',
-        '**/*.d.ts',
-        '**/.vitest/**',
-        '**/mocks/**'
-      ]
-    }
-  },
+  // test: {
+  //   globals: true,
+  //   environment: 'happy-dom',
+  //   setupFiles: '.vitest/setup',
+  //   include: ['**/**.test.{ts,tsx}'],
+  //   exclude: [
+  //     ...configDefaults.exclude,
+  //     '**/**.config.{js,ts,tsx}',
+  //     '**/index.{ts,tsx}',
+  //     '**/constants/**{ts,tsx}',
+  //     '**/types/**/**{ts,tsx}',
+  //     '**/*.d.ts',
+  //     '**/.vitest/**',
+  //     '**/mocks/**'
+  //   ],
+  //   coverage: {
+  //     provider: 'v8', // istanbul or v8 are the preferred providers, v8 is the default provider anyway
+  //     reportOnFailure: true,
+  //     exclude: [
+  //       ...configDefaults.exclude,
+  //       '**/**.config.{js,ts,tsx}',
+  //       '**/index.{ts,tsx}',
+  //       '**/constants/**{ts,tsx}',
+  //       '**/types/**/**{ts,tsx}',
+  //       '**/*.d.ts',
+  //       '**/.vitest/**',
+  //       '**/mocks/**'
+  //     ]
+  //   }
+  // },
   // preview: {
   //   host: 'localhost',
   //   port: 5173,

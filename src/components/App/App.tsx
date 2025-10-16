@@ -26,14 +26,16 @@ const App = () => {
     )
   }
 
+  const showConfetti = false
+
   return (
-    <div className="font-roboto relative">
-      <ImportMap />
+    <main className="font-roboto relative">
+      {showConfetti && <ImportMap />}
       <Background position="absolute" size="full" src={thex} />
       <div className="relative h-full bg-black pr-[var(--padding-w-page)] pl-[var(--padding-w-page)]">
         <Home />
       </div>
-    </div>
+    </main>
   )
 }
 
