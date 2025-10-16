@@ -8,8 +8,8 @@
  * const isLargeScreen = useMediaQuery('(min-width: 1024px)')
  */
 
-import { makeMediaQueryStore } from './makeMediaQueryStore'
+import { useMakeMediaQueryStore } from './useMakeMediaQueryStore'
 
 export const useMediaQuery = (mediaQuery: string): boolean => {
-  return makeMediaQueryStore(mediaQuery)
+  return useMakeMediaQueryStore(mediaQuery)
 }

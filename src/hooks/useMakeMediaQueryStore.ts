@@ -1,6 +1,6 @@
 import { useCallback, useSyncExternalStore } from 'react'
 
-export const makeMediaQueryStore = (mediaQuery: string): boolean => {
+export const useMakeMediaQueryStore = (mediaQuery: string): boolean => {
   const getMediaQuerySnapshot = useCallback(() => {
     console.log('getMediaQuerySnapshot called with mediaQuery:', mediaQuery)
     return window.matchMedia(mediaQuery).matches

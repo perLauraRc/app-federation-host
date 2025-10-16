@@ -11,6 +11,7 @@ const ImportMap = () => {
         const module = await import('https://esm.sh/canvas-confetti@1.6.0')
         setConfettiFn(() => module.default)
       } catch (err) {
+        // eslint-disable-next-line no-console
         console.error('Failed to load confetti module', err)
       }
     }
