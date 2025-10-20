@@ -5,6 +5,7 @@ import federation from '@originjs/vite-plugin-federation'
 import react from '@vitejs/plugin-react-swc'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import tailwindcss from '@tailwindcss/vite'
+import { REMOTE_URL, REMOTE_PORT, APP_FEDERATION_DOMAIN } from './constants'
 
 export default defineConfig({
   plugins: [
@@ -14,7 +15,9 @@ export default defineConfig({
     federation({
       name: 'host-app',
       remotes: {
-        remoteApp: 'http://app-federation-remote:5174/assets/remoteEntry.js'
+        remoteApp: `${process.env.REMOTE_URL || REMOTE_URL}:${
+          process.env.REMOTE_PORT || REMOTE_PORT
+        }/assets/remoteEntry.js`
       },
       shared: ['react', 'react-dom']
     })
@@ -55,7 +58,7 @@ export default defineConfig({
   //   strictPort: true,
   // },
   server: {
-    host: 'app-federation',
+    host: APP_FEDERATION_DOMAIN,
     port: 5173,
     strictPort: true, // Exits if the port is already in use
     open: true,
@@ -65,14 +68,14 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
         secure: false, // in case of using https with an invalid certificate,
-        configure: (proxy, _options) => {
-          proxy.on('error', (err, _req, _res) => {
+        configure: (proxy) => {
+          proxy.on('error', (err) => {
             console.log('proxy error', err)
           })
-          proxy.on('proxyReq', (proxyReq, req, _res) => {
+          proxy.on('proxyReq', (_, req) => {
             console.log('Sending Request:', req.method, req.url)
           })
-          proxy.on('proxyRes', (proxyRes, req, _res) => {
+          proxy.on('proxyRes', (proxyRes, req) => {
             console.log('Received Response from:', req.url, proxyRes.statusCode)
           })
         }
