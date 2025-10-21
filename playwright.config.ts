@@ -1,5 +1,5 @@
 import { defineConfig, devices } from '@playwright/test'
-import { BASE_URL, HOST_PORT, REMOTE_PORT, REMOTE_URL } from './constants'
+import { BASE_URL, HOST_PORT } from './constants'
 
 /**
  * Read environment variables from file.
@@ -55,13 +55,13 @@ export default defineConfig({
 
   /* Serve both host and remote applications before starting the tests */
   webServer: [
-    {
-      command: 'cd ../remote && npm run build && npm run preview',
-      url: `${process.env.REMOTE_URL || REMOTE_URL}:${
-        process.env.REMOTE_PORT || REMOTE_PORT
-      }`,
-      reuseExistingServer: !process.env.CI
-    },
+    // {
+    //   command: 'cd ../remote && npm run build && npm run preview',
+    //   url: `${process.env.REMOTE_URL || REMOTE_URL}:${
+    //     process.env.REMOTE_PORT || REMOTE_PORT
+    //   }`,
+    //   reuseExistingServer: !process.env.CI
+    // },
     {
       command: 'npm run dev',
       url: `${process.env.BASE_URL || BASE_URL}:${

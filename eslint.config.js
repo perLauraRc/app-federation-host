@@ -86,7 +86,6 @@ const sharedRules = {
   'jsx-quotes': ['error', 'prefer-single'],
   'no-console': 'error',
   quotes: ['error', 'single', { avoidEscape: true }]
-  // semi: ['error', 'always']
 }
 
 export default defineConfig([
@@ -126,7 +125,7 @@ export default defineConfig([
   },
   {
     name: 'allfiles',
-    files: ['**/*.{js,jsx,s,tsx,css}'],
+    files: ['**/*.{js,jsx,ts,tsx,css}'],
     languageOptions: {
       globals: {
         ...globals.node

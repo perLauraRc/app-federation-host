@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { useCallback, useSyncExternalStore } from 'react'
 
 export const useMakeMediaQueryStore = (mediaQuery: string): boolean => {
