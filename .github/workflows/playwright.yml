@@ -28,6 +28,10 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
+      # Output ENVIRONMENT VARIABLES for debugging
+      - name: Output Environment Variables
+        run: printenv
+
       # Run Playwright tests
       - name: Run Playwright tests
         run: npx playwright test

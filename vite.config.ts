@@ -10,7 +10,7 @@ import { REMOTE_URL, REMOTE_PORT, HOSTNAME } from './constants'
 import 'dotenv/config'
 
 // dotenv.config()
-console.log('process.env : ', process.env)
+console.log('process.env : ', JSON.stringify(process.env, null, 2))
 
 export default defineConfig({
   plugins: [
