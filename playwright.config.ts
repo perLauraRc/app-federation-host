@@ -29,7 +29,7 @@ export default defineConfig({
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
     baseURL: process.env.CI
-      ? 'http://localhost:3000'
+      ? 'http://localhost:5173'
       : `${process.env.BASE_URL || BASE_URL}:${
           process.env.HOST_PORT || HOST_PORT
         }`,
@@ -60,8 +60,9 @@ export default defineConfig({
     ? [
         {
           command: 'npm run dev',
-          url: 'http://localhost:3000',
-          reuseExistingServer: false
+          url: 'http://localhost:5173',
+          reuseExistingServer: false,
+          timeout: 2 * 60 * 1000
         }
       ]
     : [
