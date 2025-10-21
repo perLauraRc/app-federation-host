@@ -23,11 +23,11 @@ jobs:
           node-version: '20' # Use a modern Node.js version compatible with Vite/Vitest (supports ||= &&= ??=)
           cache: 'npm'
 
-      # Install dependencies
-      - name: Install dependencies
+      # Install NPM dependencies
+      - name: Install NPM dependencies
         run: npm ci
 
-      # Run tests and linting (adjust commands according to your project setup)
+      # Run tests and linting
       - name: Run tests
         run: npm run test:coverage
 
