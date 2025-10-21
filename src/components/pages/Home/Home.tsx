@@ -28,7 +28,6 @@ const gridItemClassName = `flex justify-center items-center p-${GRID_ITEM_PADDIN
 
 const Home = () => {
   const isLGMediaQuery = useMediaQuery('(min-width: 1024px)')
-  const ENV = import.meta.env.REACT_random_Var
   const [competitionProgress, setCompetitionProgress] = useState<
     GetCompetitionMatchesApiResponse['resultSet'] | null
   >(null)
@@ -155,8 +154,6 @@ const Home = () => {
           </span>
         </span>
       </h1>
-
-      <h1>{`HOLA :: ${ENV}`}</h1>
 
       {loading ? (
         <div className="p-8 text-9xl text-white">Loading matchesData...</div>

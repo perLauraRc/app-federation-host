@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /// <reference types="vitest" />
 // import { configDefaults } from 'vitest/config'
 import { defineConfig } from 'vite'
@@ -5,7 +6,11 @@ import federation from '@originjs/vite-plugin-federation'
 import react from '@vitejs/plugin-react-swc'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import tailwindcss from '@tailwindcss/vite'
-import { REMOTE_URL, REMOTE_PORT, APP_FEDERATION_DOMAIN } from './constants'
+import { REMOTE_URL, REMOTE_PORT, HOSTNAME } from './constants'
+import 'dotenv/config'
+
+// dotenv.config()
+console.log('process.env : ', process.env)
 
 export default defineConfig({
   plugins: [
@@ -58,7 +63,7 @@ export default defineConfig({
   //   strictPort: true,
   // },
   server: {
-    host: APP_FEDERATION_DOMAIN,
+    host: HOSTNAME,
     port: 5173,
     strictPort: true, // Exits if the port is already in use
     open: true,
