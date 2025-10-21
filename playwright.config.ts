@@ -66,9 +66,11 @@ export default defineConfig({
     // },
     {
       command: 'npm run dev',
-      url: `${process.env.BASE_URL || BASE_URL}:${
-        process.env.HOST_PORT || HOST_PORT
-      }`,
+      url: process.env.CI
+        ? 'http://localhost'
+        : `${process.env.BASE_URL || BASE_URL}:${
+            process.env.HOST_PORT || HOST_PORT
+          }`,
       reuseExistingServer: !process.env.CI
     }
   ]
