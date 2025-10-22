@@ -37,12 +37,12 @@ jobs:
         run: echo "127.0.0.1 app-federation" | sudo tee -a /etc/hosts
 
       # Ensure the app server is started and ready before running Playwright tests
-      # - name: Start dev server (CI)
-      #   run: |
-      #     npm ci
-      #     npm run dev -- --host 0.0.0.0 &   # make server reachable in runner
-      #     npx wait-on http://localhost:5173
-      #   timeout-minutes: 5
+      - name: Start dev server (CI)
+        run: |
+          npm ci
+          npm run dev -- --host 0.0.0.0 &   # make server reachable in runner
+          npx wait-on http://localhost:5173
+        timeout-minutes: 5
 
       # Add a verification/debug step to confirm CI HTML before running Playwright tests
       - name: Debug - Show server response

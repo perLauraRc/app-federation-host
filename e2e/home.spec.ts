@@ -28,8 +28,8 @@ test.describe('Home page', () => {
     try {
       await expect(page.locator('main')).toBeVisible()
     } catch (err) {
-      console.error('=== CI page snapshot (first 5000 chars) ===')
-      console.error((await page.content()).slice(0, 5000))
+      console.error('=== CI page snapshot (first 50000 chars) ===')
+      console.error((await page.content()).slice(0, 50000))
       throw err
     }
     await expect(page.getByTestId('home-page')).toBeVisible()
