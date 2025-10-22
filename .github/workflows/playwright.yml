@@ -36,6 +36,22 @@ jobs:
       - name: Add app-federation to /etc/hosts
         run: echo "127.0.0.1 app-federation" | sudo tee -a /etc/hosts
 
+      # Ensure the app server is started and ready before Playwright runs
+      - name: Start dev server (CI)
+        run: |
+          npm ci
+          npm run dev -- --host 0.0.0.0 &   # make server reachable in runner
+          npx wait-on http://localhost:5173
+        timeout-minutes: 5
+
+      # Add a verification/debug step to confirm CI HTML before Playwright
+      - name: Debug - Show server response
+        run: |
+          echo "HEADERS:"
+          curl -I http://localhost:5173 || true
+          echo "HTML (first 500 lines):"
+          curl http://localhost:5173 | sed -n '1,500p'
+
       # Run Playwright tests
       - name: Run Playwright tests
         run: npx playwright test
