@@ -24,7 +24,14 @@ test.describe('Home page', () => {
     // Verify meta title
     await expect(page).toHaveTitle(/theX/)
     // Verify layout is visible in the DOM
-    await expect(page.locator('main')).toBeVisible()
+    // await expect(page.locator('main')).toBeVisible()
+    try {
+      await expect(page.locator('main')).toBeVisible()
+    } catch (err) {
+      console.error('=== CI page snapshot (first 5000 chars) ===')
+      console.error((await page.content()).slice(0, 5000))
+      throw err
+    }
     await expect(page.getByTestId('home-page')).toBeVisible()
     // Verify content is visible in the DOM
     const theXHeading = page.getByRole('heading', { name: 'TheX TheX TheX' })
