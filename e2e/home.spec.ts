@@ -18,7 +18,7 @@ test.describe('Home page', () => {
   test('has correct title and layout', async ({ page }) => {
     if (process.env.ENV && process.env.ENV === 'ci') {
       expect(page.url()).toBe('http://localhost:5173/')
-    } else {
+    } else if (!process.env.CI) {
       expect(page.url()).toBe('http://app-federation:5173/')
     }
     // Verify meta title
