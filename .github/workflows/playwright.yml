@@ -32,6 +32,10 @@ jobs:
       - name: Output Environment Variables
         run: printenv
 
+      # Add app-federation as a hostname to /etc/hosts
+      - name: Add app-federation to /etc/hosts
+        run: echo "127.0.0.1 app-federation" | sudo tee -a /etc/hosts
+
       # Run Playwright tests
       - name: Run Playwright tests
         run: npx playwright test
