@@ -3,14 +3,16 @@ import { test, expect } from '@playwright/test'
 
 test.describe('Home page', () => {
   test.beforeEach(async ({ page }, testInfo) => {
-    console.log(`Running the following test "${testInfo.title}"`)
+    console.log(`:: Running the following test "${testInfo.title}" ::`)
     await page.goto('/')
   })
   test.afterEach(async ({ page }, testInfo) => {
     console.log(
-      `Testing for page "${await page.title()}" has been completed in ${
+      `:: Test "${
+        testInfo.title
+      }" within URL ${page.url()} has been completed in ${
         testInfo.duration
-      }ms`
+      }ms ::`
     )
   })
   test('has correct title and layout', async ({ page }) => {
