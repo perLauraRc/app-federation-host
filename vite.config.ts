@@ -7,10 +7,6 @@ import react from '@vitejs/plugin-react-swc'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import tailwindcss from '@tailwindcss/vite'
 import { REMOTE_URL, REMOTE_PORT, HOSTNAME } from './constants'
-import 'dotenv/config'
-
-// dotenv.config()
-console.log('process.env : ', JSON.stringify(process.env, null, 2))
 
 export default defineConfig({
   plugins: [

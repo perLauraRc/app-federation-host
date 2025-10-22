@@ -1,5 +1,5 @@
 import { defineConfig, devices } from '@playwright/test'
-import { BASE_URL, HOST_PORT, REMOTE_URL, REMOTE_PORT } from './constants'
+// import { BASE_URL, HOST_PORT, REMOTE_URL, REMOTE_PORT } from './constants'
 
 /**
  * Read environment variables from file.
@@ -8,10 +8,41 @@ import { BASE_URL, HOST_PORT, REMOTE_URL, REMOTE_PORT } from './constants'
 // import dotenv from 'dotenv';
 // import path from 'path';
 // dotenv.config({ path: path.resolve(__dirname, '.env') });
+import dotenv from 'dotenv'
+import path from 'node:path'
 
+dotenv.config({
+  path: `${path.resolve(
+    process.cwd(),
+    `.env${
+      process.env.ENV && process.env.ENV === 'ci' ? `.${process.env.ENV}` : ''
+    }`
+  )}`
+})
+console.log(
+  'path resolved for env variables file : ',
+  `${path.resolve(
+    process.cwd(),
+    `.env${
+      process.env.ENV && process.env.ENV === 'ci' ? `.${process.env.ENV}` : ''
+    }`
+  )}`
+)
+// console.log(
+//   'path resolved for env variables file : ',
+//   JSON.stringify(process.env, null, 2)
+// )
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
+
+const getBaseUrl = () => {
+  if (process.env.CI) {
+    return 'http://localhost:5173'
+  }
+  return `${process.env.BASE_URL}:${process.env.HOST_PORT}`
+}
+
 export default defineConfig({
   testDir: './e2e',
   /* Run tests in files in parallel */
@@ -28,11 +59,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
-    baseURL: process.env.CI
-      ? 'http://localhost:5173'
-      : `${process.env.BASE_URL || BASE_URL}:${
-          process.env.HOST_PORT || HOST_PORT
-        }`,
+    baseURL: getBaseUrl(),
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
     /* Take screenshot on failure */
@@ -60,7 +87,7 @@ export default defineConfig({
     ? [
         {
           command: 'npm run dev',
-          url: 'http://localhost:5173',
+          url: getBaseUrl(),
           reuseExistingServer: false,
           timeout: 2 * 60 * 1000
         }
@@ -68,16 +95,14 @@ export default defineConfig({
     : [
         {
           command: 'cd ../remote && npm run build && npm run preview',
-          url: `${process.env.REMOTE_URL || REMOTE_URL}:${
-            process.env.REMOTE_PORT || REMOTE_PORT
+          url: `${process.env.REMOTE_URL ?? ''}:${
+            process.env.REMOTE_PORT ?? ''
           }`,
           reuseExistingServer: true
         },
         {
           command: 'npm run dev',
-          url: `${process.env.BASE_URL || BASE_URL}:${
-            process.env.HOST_PORT || HOST_PORT
-          }`,
+          url: `${process.env.BASE_URL}:${process.env.HOST_PORT}`,
           reuseExistingServer: true
         }
       ]

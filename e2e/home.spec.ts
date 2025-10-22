@@ -8,11 +8,17 @@ test.describe('Home page', () => {
   })
   test.afterEach(async ({ page }, testInfo) => {
     console.log(
-      `TEST FOR PAGE "${await page.title()}" complete in ${testInfo.duration}ms`
+      `Testing for page "${await page.title()}" has been completed in ${
+        testInfo.duration
+      }ms`
     )
   })
   test('has correct title and layout', async ({ page }) => {
-    expect(page.url()).toBe('http://app-federation:5173/')
+    if (process.env.ENV && process.env.ENV === 'ci') {
+      expect(page.url()).toBe('http://localhost:5173/')
+    } else {
+      expect(page.url()).toBe('http://app-federation:5173/')
+    }
     // Verify meta title
     await expect(page).toHaveTitle(/theX/)
     // Verify layout is visible in the DOM
