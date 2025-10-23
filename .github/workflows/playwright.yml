@@ -5,14 +5,21 @@ on:
   pull_request:
     branches: [main]
 jobs:
-  test:
+  e2e:
     timeout-minutes: 60
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout (clone) the repository
+      # Checkout (clone) repository
       - name: Checkout code
         uses: actions/checkout@v4
+
+      # Checkout remote repository
+      - name: Checkout remote repository
+        uses: actions/checkout@v4
+        with:
+          repository: perLauraRc/app-federation-remote
+          path: app-federation-remote
 
       # Install and set up Node.js environment
       - name: Set up Node.js
@@ -23,6 +30,32 @@ jobs:
       # Install NPM dependencies
       - name: Install NPM dependencies
         run: npm ci
+
+      # Install NPM dependencies for remote app
+      - name: Install NPM dependencies for remote app
+        working-directory: ./app-federation-remote
+        run: npm ci
+
+      # Build remote app
+      - name: Build remote app
+        working-directory: ./app-federation-remote
+        run: npm run build
+
+      # Start a server on port 5174 to serve a preview of the remote app built
+      - name: Start remote app preview on port 5174
+        working-directory: ./app-federation-remote
+        run: |
+          # ensure preview is reachable from runner
+          npm run preview -- --host 0.0.0.0 --port 5174 &
+          npx wait-on http://localhost:5174
+        timeout-minutes: 5
+
+      # Wait for remoteEntry.js to be served
+      - name: Verify remoteEntry is served
+        run: |
+          echo "Checking remoteEntry at http://localhost:5174/assets/remoteEntry.js"
+          curl -I http://localhost:5174/assets/remoteEntry.js || \
+            (echo "remoteEntry not found - aborting"; curl http://localhost:5174 | sed -n '1,200p'; exit 1)
 
       # Install Playwright Browsers
       - name: Install Playwright Browsers
@@ -37,24 +70,36 @@ jobs:
         run: echo "127.0.0.1 app-federation" | sudo tee -a /etc/hosts
 
       # Ensure the app server is started and ready before running Playwright tests
-      - name: Start dev server (CI)
+      # (It is reachable from runner)
+      - name: Start app on port 5173
         run: |
-          npm ci
-          npm run dev -- --host 0.0.0.0 &   # make server reachable in runner
+          # npm ci
+          # ensure it is reachable from runner
+          npm run dev -- --host 0.0.0.0  --port 5173 &
           npx wait-on http://localhost:5173
         timeout-minutes: 5
 
-      # Add a verification/debug step to confirm CI HTML before running Playwright tests
-      - name: Debug - Show server response
+      # Verify both endpoints before running Playwright tests
+      - name: Debug - Verify both server responses
         run: |
-          echo "HEADERS:"
-          curl -I http://localhost:5173 || true
-          echo "HTML (first 500 lines):"
-          curl http://localhost:5173 | sed -n '1,500p'
+          echo "--- Host index (first 200 lines) ---"
+          curl http://localhost:5173 | sed -n '1,200p' || true
+          echo "--- Remote remoteEntry head ---"
+          curl -I http://localhost:5174/assets/remoteEntry.js || true
+          echo "--- Remote index (first 120 lines) ---"
+          curl http://localhost:5174 | sed -n '1,120p' || true
+
+      # Add a verification/debug step to confirm host HTML before running Playwright tests
+      # - name: Debug - Show server responses
+      #   run: |
+      #     echo "HEADERS:"
+      #     curl -I http://localhost:5173 || true
+      #     echo "HTML (first 500 lines):"
+      #     curl http://localhost:5173 | sed -n '1,500p'
 
       # Run Playwright tests
       - name: Run Playwright tests
-        run: npx playwright test
+        run: npx playwright test --reporter=list
 
       # Upload HTML report to the GitHub UI
       - name: Upload Playwright Report
@@ -63,4 +108,4 @@ jobs:
         with:
           name: playwright-report
           path: playwright-report/
-          retention-days: 30
+          retention-days: 90

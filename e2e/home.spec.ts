@@ -4,6 +4,23 @@ import { test, expect } from '@playwright/test'
 test.describe('Home page', () => {
   test.beforeEach(async ({ page }, testInfo) => {
     console.log(`:: Running the following test "${testInfo.title}" ::`)
+    // *****************************************/
+    // Listen to page console logs and errors to
+    // surface page runtime problems in CI logs
+    page.on('console', (msg) => {
+      console.log(`[page console] ${msg.type()}: ${msg.text()}`)
+    })
+    page.on('pageerror', (err) => {
+      console.error('[page error]:', err.message)
+    })
+    page.on('requestfailed', (req) => {
+      console.error(
+        `[request failed] ${req.method()} ${req.url()}: ${
+          req.failure()?.errorText ?? 'unknown'
+        }`
+      )
+    })
+    // *****************************************/
     await page.goto('/')
   })
   test.afterEach(async ({ page }, testInfo) => {
@@ -23,6 +40,8 @@ test.describe('Home page', () => {
     }
     // Verify meta title
     await expect(page).toHaveTitle(/theX/)
+    // wait for main to exist; longer timeout in CI
+    await page.waitForSelector('main', { timeout: 15000 })
     // Verify layout is visible in the DOM
     // await expect(page.locator('main')).toBeVisible()
     try {
