@@ -16,9 +16,11 @@ export default defineConfig({
     federation({
       name: 'host-app',
       remotes: {
-        remoteApp: `${process.env.REMOTE_URL || REMOTE_URL}:${
-          process.env.REMOTE_PORT || REMOTE_PORT
-        }/assets/remoteEntry.js`
+        remoteApp: process.env.CI
+          ? 'http://localhost:5174'
+          : `${process.env.REMOTE_URL || REMOTE_URL}:${
+              process.env.REMOTE_PORT || REMOTE_PORT
+            }/assets/remoteEntry.js`
       },
       shared: ['react', 'react-dom']
     })
