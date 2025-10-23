@@ -17,7 +17,7 @@ export default defineConfig({
       name: 'host-app',
       remotes: {
         remoteApp: process.env.CI
-          ? 'http://localhost:5174'
+          ? 'http://localhost:5174/assets/remoteEntry.js'
           : `${process.env.REMOTE_URL || REMOTE_URL}:${
               process.env.REMOTE_PORT || REMOTE_PORT
             }/assets/remoteEntry.js`
