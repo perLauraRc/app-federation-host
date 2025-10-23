@@ -43,7 +43,7 @@ jobs:
 
       # Ensure remote app build output exists
       - name: Debug - List remote build output
-        run: ls -l ./app-federation-remote/dist/assets
+        run: ls -l ./dist/assets
         working-directory: ./app-federation-remote
 
       # Start a server on port 5174 to serve a preview of the remote app built
