@@ -6,6 +6,7 @@ on:
     branches: [main]
 
 env:
+  HOSTNAME: app-federation
   BASE_URL: http://localhost
   HOST_PORT: 5173
   REMOTE_URL: http://localhost
@@ -112,8 +113,8 @@ jobs:
         run: printenv
 
       # Add app-federation as a hostname to /etc/hosts
-      - name: Add app-federation to /etc/hosts
-        run: echo "127.0.0.1 app-federation" | sudo tee -a /etc/hosts
+      - name: Add ${{ env.HOSTNAME }} to /etc/hosts
+        run: echo "127.0.0.1 ${{ env.HOSTNAME }}" | sudo tee -a /etc/hosts
 
       # Ensure the app server is started and ready before running Playwright tests
       # (It is reachable from runner)

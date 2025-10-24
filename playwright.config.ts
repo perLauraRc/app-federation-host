@@ -11,26 +11,16 @@ import path from 'node:path'
 dotenv.config({
   path: `${path.resolve(
     process.cwd(),
-    // Should resolve to .env.ci file when ENV variable is set to "ci"
-    // Otherwise should resolve to default .env file
+    // Should resolve to .env.ci when ENV variable is set to "ci"
+    // or when running in CI environment (process.env.CI set to true)
+    // Otherwise should resolve to .env
     `.env${
-      process.env.ENV && process.env.ENV === 'ci' ? `.${process.env.ENV}` : ''
+      (process.env.ENV && process.env.ENV === 'ci') || process.env.CI
+        ? `.ci`
+        : ''
     }`
   )}`
 })
-console.log(
-  'path resolved for environment file : ',
-  `${path.resolve(
-    process.cwd(),
-    `.env${
-      process.env.ENV && process.env.ENV === 'ci' ? `.${process.env.ENV}` : ''
-    }`
-  )}`
-)
-// console.log(
-//   'path resolved for env variables file : ',
-//   JSON.stringify(process.env, null, 2)
-// )
 
 const getBaseUrl = () => {
   if (process.env.CI) {
