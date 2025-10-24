@@ -1,0 +1,150 @@
+name: Playwright Tests
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  HOSTNAME: app-federation
+  BASE_URL: http://localhost
+  HOST_PORT: 5173
+  REMOTE_URL: http://localhost
+  REMOTE_PORT: 5174
+
+jobs:
+  e2e:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout (clone) repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Checkout remote repository
+      - name: Checkout remote repository
+        uses: actions/checkout@v4
+        with:
+          repository: perLauraRc/app-federation-remote
+          path: app-federation-remote
+
+      # Install and set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      # Install NPM dependencies
+      - name: Install NPM dependencies
+        run: npm ci
+
+      # Install NPM dependencies for remote app
+      - name: Install NPM dependencies for remote app
+        working-directory: ./app-federation-remote
+        run: npm ci
+
+      # DEBUG - Ensure remote app plugins + config necessary for build output are not missing
+      # - name: Debug - remote app plugins + config presence
+      #   working-directory: ./app-federation-remote
+      #   run: |
+      #     echo "=== Repo top-level ==="
+      #     ls -la .
+
+      #     echo "=== package.json ==="
+      #     cat package.json
+
+      #     echo "=== package-lock.json exists? ==="
+      #     [ -f package-lock.json ] && echo "lockfile present" || echo "no lockfile"
+
+      #     echo "=== node and npm versions ==="
+      #     node --version
+      #     npm --version
+
+      #     echo "=== node_modules presence and plugin installed? ==="
+      #     ls -la node_modules/@originjs || true
+      #     npm ls @originjs/vite-plugin-federation --depth=0 || true
+
+      #     echo "=== list vite config files present ==="
+      #     ls -la vite.config.* || true
+      #     echo "=== show vite.config.js (if exists) ==="
+      #     [ -f vite.config.js ] && sed -n '1,240p' vite.config.js || echo "vite.config.js not found"
+
+      #     echo "=== grep for federation usage ==="
+      #     grep -nR "federation(" -n . || true
+
+      # Build remote app
+      - name: Build remote app
+        working-directory: ./app-federation-remote
+        run: npm run build
+
+      # DEBUG - Ensure remote app build output exists
+      # - name: Debug - List remote build output
+      #   working-directory: ./app-federation-remote
+      #   run: |
+      #     echo "Current directory: $(pwd)"
+      #     echo "Contents of dist directory:"
+      #     ls -la dist/ || echo "dist directory not found"
+      #     echo "Contents of dist/assets:"
+      #     ls -la dist/assets/ || echo "dist/assets directory not found"
+
+      # Start a server on port 5174 to serve a preview of the remote app build
+      - name: Start remote app preview on port ${{ env.REMOTE_PORT }}
+        working-directory: ./app-federation-remote
+        run: |
+          # ensure preview is reachable from runner
+          npm run preview -- --host 0.0.0.0 --port ${{ env.REMOTE_PORT }} &
+          npx wait-on ${{ env.REMOTE_URL }}:${{ env.REMOTE_PORT }}
+        timeout-minutes: 5
+
+      # DEBUG - Wait for remoteEntry.js to be served
+      # - name: Verify remoteEntry is served
+      #   run: |
+      #     echo "Checking remoteEntry at http://localhost:5174/assets/remoteEntry.js"
+      #     curl -I http://localhost:5174/assets/remoteEntry.js || \
+      #       (echo "remoteEntry not found - aborting"; curl http://localhost:5174 | sed -n '1,200p'; exit 1)
+
+      # Install Playwright Browsers
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      # Output ENVIRONMENT VARIABLES for debugging
+      - name: Output Environment Variables
+        run: printenv
+
+      # Add app-federation as a hostname to /etc/hosts
+      - name: Add ${{ env.HOSTNAME }} to /etc/hosts
+        run: echo "127.0.0.1 ${{ env.HOSTNAME }}" | sudo tee -a /etc/hosts
+
+      # Ensure the app server is started and ready before running Playwright tests
+      # (It is reachable from runner)
+      - name: Start app on port ${{ env.HOST_PORT }}
+        run: |
+          # npm ci
+          # ensure it is reachable from runner
+          npm run dev -- --host 0.0.0.0  --port ${{ env.HOST_PORT }} &
+          npx wait-on ${{ env.BASE_URL }}:${{ env.HOST_PORT }}
+        timeout-minutes: 5
+
+      # Verify both endpoints before running Playwright tests
+      - name: Debug - Verify both server responses
+        run: |
+          echo "--- Host index (first 200 lines) ---"
+          curl ${{ env.BASE_URL }}:${{ env.HOST_PORT }} | sed -n '1,200p' || true
+          echo "--- Remote remoteEntry head ---"
+          curl -I ${{ env.REMOTE_URL }}:${{ env.REMOTE_PORT }}/assets/remoteEntry.js || true
+          echo "--- Remote index (first 120 lines) ---"
+          curl ${{ env.REMOTE_URL }}:${{ env.REMOTE_PORT }} | sed -n '1,120p' || true
+
+      # Run Playwright tests
+      - name: Run Playwright tests
+        run: npx playwright test --reporter=list
+
+      # Upload HTML report to the GitHub UI
+      - name: Upload Playwright Report
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 90
