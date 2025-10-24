@@ -36,12 +36,22 @@ jobs:
         working-directory: ./app-federation-remote
         run: npm ci
 
-      # Build remote app
+      # !) Build remote app
       - name: Build remote app
         working-directory: ./app-federation-remote
         run: npm run build
 
-      # normalize the built remoteEntry to a stable filename for preview
+      # !!) Ensure remote app build output exists
+      - name: Debug - List remote build output
+        working-directory: ./app-federation-remote
+        run: |
+          echo "Current directory: $(pwd)"
+          echo "Contents of dist directory:"
+          ls -la dist/ || echo "dist directory not found"
+          echo "Contents of dist/assets:"
+          ls -la dist/assets/ || echo "dist/assets directory not found"
+
+      # !!!) Normalize the built remoteEntry to a stable filename for preview
       - name: Normalize remoteEntry filename for preview
         working-directory: ./app-federation-remote
         run: |
@@ -58,16 +68,6 @@ jobs:
           cp "dist/assets/$FILE" dist/assets/remoteEntry.js
           echo "Copied to dist/assets/remoteEntry.js"
           ls -l dist/assets
-
-      # Ensure remote app build output exists
-      - name: Debug - List remote build output
-        working-directory: ./app-federation-remote
-        run: |
-          echo "Current directory: $(pwd)"
-          echo "Contents of dist directory:"
-          ls -la dist/ || echo "dist directory not found"
-          echo "Contents of dist/assets:"
-          ls -la dist/assets/ || echo "dist/assets directory not found"
 
       # Start a server on port 5174 to serve a preview of the remote app build
       - name: Start remote app preview on port 5174
