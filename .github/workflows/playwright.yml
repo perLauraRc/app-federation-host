@@ -81,22 +81,22 @@ jobs:
           ls -la dist/assets/ || echo "dist/assets directory not found"
 
       # !!!) Normalize the built remoteEntry to a stable filename for preview
-      - name: Normalize remoteEntry filename for preview
-        working-directory: ./app-federation-remote
-        run: |
-          set -e
-          echo "Looking for generated remoteEntry file in dist/assets"
-          FILE=$(ls dist/assets | grep -E '^remoteEntry([.-][0-9a-fA-F]+)?\.js$' || true)
-          if [ -z "$FILE" ]; then
-            echo "remoteEntry not found in dist/assets. Listing dist and dist/assets for debugging:"
-            ls -la dist || true
-            ls -la dist/assets || true
-            exit 1
-          fi
-          echo "Found: $FILE"
-          cp "dist/assets/$FILE" dist/assets/remoteEntry.js
-          echo "Copied to dist/assets/remoteEntry.js"
-          ls -l dist/assets
+      # - name: Normalize remoteEntry filename for preview
+      #   working-directory: ./app-federation-remote
+      #   run: |
+      #     set -e
+      #     echo "Looking for generated remoteEntry file in dist/assets"
+      #     FILE=$(ls dist/assets | grep -E '^remoteEntry([.-][0-9a-fA-F]+)?\.js$' || true)
+      #     if [ -z "$FILE" ]; then
+      #       echo "remoteEntry not found in dist/assets. Listing dist and dist/assets for debugging:"
+      #       ls -la dist || true
+      #       ls -la dist/assets || true
+      #       exit 1
+      #     fi
+      #     echo "Found: $FILE"
+      #     cp "dist/assets/$FILE" dist/assets/remoteEntry.js
+      #     echo "Copied to dist/assets/remoteEntry.js"
+      #     ls -l dist/assets
 
       # Start a server on port 5174 to serve a preview of the remote app build
       - name: Start remote app preview on port 5174
