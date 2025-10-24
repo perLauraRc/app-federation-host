@@ -4,6 +4,13 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+
+env:
+  BASE_URL: http://localhost
+  HOST_PORT: 5173
+  REMOTE_URL: http://localhost
+  REMOTE_PORT: 5174
+
 jobs:
   e2e:
     timeout-minutes: 60
@@ -81,12 +88,12 @@ jobs:
       #     ls -la dist/assets/ || echo "dist/assets directory not found"
 
       # Start a server on port 5174 to serve a preview of the remote app build
-      - name: Start remote app preview on port 5174
+      - name: Start remote app preview on port ${{ env.REMOTE_PORT }}
         working-directory: ./app-federation-remote
         run: |
           # ensure preview is reachable from runner
-          npm run preview -- --host 0.0.0.0 --port 5174 &
-          npx wait-on http://localhost:5174
+          npm run preview -- --host 0.0.0.0 --port ${{ env.REMOTE_PORT }} &
+          npx wait-on ${{ env.REMOTE_URL }}:${{ env.REMOTE_PORT }}
         timeout-minutes: 5
 
       # DEBUG - Wait for remoteEntry.js to be served
@@ -110,23 +117,23 @@ jobs:
 
       # Ensure the app server is started and ready before running Playwright tests
       # (It is reachable from runner)
-      - name: Start app on port 5173
+      - name: Start app on port ${{ env.HOST_PORT }}
         run: |
           # npm ci
           # ensure it is reachable from runner
-          npm run dev -- --host 0.0.0.0  --port 5173 &
-          npx wait-on http://localhost:5173
+          npm run dev -- --host 0.0.0.0  --port ${{ env.HOST_PORT }} &
+          npx wait-on ${{ env.BASE_URL }}:${{ env.HOST_PORT }}
         timeout-minutes: 5
 
       # Verify both endpoints before running Playwright tests
       - name: Debug - Verify both server responses
         run: |
           echo "--- Host index (first 200 lines) ---"
-          curl http://localhost:5173 | sed -n '1,200p' || true
+          curl ${{ env.BASE_URL }}:${{ env.HOST_PORT }} | sed -n '1,200p' || true
           echo "--- Remote remoteEntry head ---"
-          curl -I http://localhost:5174/assets/remoteEntry.js || true
+          curl -I ${{ env.REMOTE_URL }}:${{ env.REMOTE_PORT }}/assets/remoteEntry.js || true
           echo "--- Remote index (first 120 lines) ---"
-          curl http://localhost:5174 | sed -n '1,120p' || true
+          curl ${{ env.REMOTE_URL }}:${{ env.REMOTE_PORT }} | sed -n '1,120p' || true
 
       # Run Playwright tests
       - name: Run Playwright tests
