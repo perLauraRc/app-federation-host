@@ -36,6 +36,35 @@ jobs:
         working-directory: ./app-federation-remote
         run: npm ci
 
+      # Ensure remote app plugins + config necessary for build output are not missing
+      - name: Debug - remote app plugins + config presence
+        working-directory: ./app-federation-remote
+        run: |
+          echo "=== Repo top-level ==="
+          ls -la .
+
+          echo "=== package.json ==="
+          cat package.json
+
+          echo "=== package-lock.json exists? ==="
+          [ -f package-lock.json ] && echo "lockfile present" || echo "no lockfile"
+
+          echo "=== node and npm versions ==="
+          node --version
+          npm --version
+
+          echo "=== node_modules presence and plugin installed? ==="
+          ls -la node_modules/@originjs || true
+          npm ls @originjs/vite-plugin-federation --depth=0 || true
+
+          echo "=== list vite config files present ==="
+          ls -la vite.config.* || true
+          echo "=== show vite.config.js (if exists) ==="
+          [ -f vite.config.js ] && sed -n '1,240p' vite.config.js || echo "vite.config.js not found"
+
+          echo "=== grep for federation usage ==="
+          grep -nR "federation(" -n . || true
+
       # !) Build remote app
       - name: Build remote app
         working-directory: ./app-federation-remote
