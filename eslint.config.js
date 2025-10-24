@@ -149,5 +149,5 @@ export default defineConfig([
     'coverage',
     '**/*.css'
   ]),
-  eslintConfigPrettier
+  eslintConfigPrettier // Overrides Eslint rules (must be last to do so)
 ])
