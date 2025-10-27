@@ -1,5 +1,5 @@
 import { defineConfig, configDefaults } from 'vitest/config'
-import { resolve } from 'path'
+import path from 'node:path'
 
 export default defineConfig({
   test: {
@@ -35,32 +35,35 @@ export default defineConfig({
   resolve: {
     alias: {
       // Add @ path alias
-      '@': resolve(__dirname, './src'),
+      '@src': path.resolve(__dirname, './src'),
       // Mock for SVG imports
-      '@/assets/thex.svg': resolve(__dirname, './src/test/mocks/svgMock.tsx'),
+      '@src/assets/thex.svg': path.resolve(
+        __dirname,
+        './src/test/mocks/svgMock.tsx'
+      ),
       // Mock for ESM imports
-      '@/components/pages/Home/Home': resolve(
+      '@src/components/pages/Home/Home': path.resolve(
         __dirname,
         './src/test/mocks/HomeComponent.tsx'
       ),
-      'https://esm.sh/canvas-confetti@1.6.0': resolve(
+      'https://esm.sh/canvas-confetti@1.6.0': path.resolve(
         __dirname,
         './src/test/mocks/confettiModule.ts'
       ),
       // Mocks for Module Federation remote components
-      'remoteApp/Background': resolve(
+      'remoteApp/Background': path.resolve(
         __dirname,
         './src/test/mocks/BackgroundComponent.tsx'
       ),
-      'remoteApp/CircleProgress': resolve(
+      'remoteApp/CircleProgress': path.resolve(
         __dirname,
         './src/test/mocks/CircleProgressComponent.tsx'
       ),
-      'remoteApp/ErrorPage': resolve(
+      'remoteApp/ErrorPage': path.resolve(
         __dirname,
         './src/test/mocks/ErrorPageComponent.tsx'
       ),
-      'remoteApp/FixturesCarousel': resolve(
+      'remoteApp/FixturesCarousel': path.resolve(
         __dirname,
         './src/test/mocks/FixturesCarouselComponent.tsx'
       )

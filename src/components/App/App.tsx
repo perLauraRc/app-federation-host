@@ -5,10 +5,10 @@ import './App.css'
 import Background from 'remoteApp/Background'
 import ErrorPage from 'remoteApp/ErrorPage'
 
-import thex from '@/assets/thex.svg'
-import type { APIError } from '@/types'
-import Home from '@/components/pages/Home/Home'
-import ImportMap from '@/components/ImportMap/ImportMap'
+import thex from '@src/assets/thex.svg'
+import type { APIError } from '@src/types'
+import Home from '@src/components/pages/Home/Home'
+import ImportMap from '@src/components/ImportMap/ImportMap'
 
 const App = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

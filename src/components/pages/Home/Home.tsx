@@ -4,25 +4,25 @@ import CircleProgress from 'remoteApp/CircleProgress'
 import FixturesCarousel from 'remoteApp/FixturesCarousel'
 import ErrorPage from 'remoteApp/ErrorPage'
 
-import type { APIError, Match } from '@/types'
+import type { APIError, Match } from '@src/types'
 
-import { classNames } from '@/utils/classNames'
-import { fetchRequest } from '@/services/fetchApiService'
+import { classNames } from '@src/utils/classNames'
+import { fetchRequest } from '@src/services/fetchApiService'
 import {
   CompetitionIds,
   EndpointPath,
   MatchStatuses
-} from '@/constants/restApi'
-import type { GetCompetitionMatchesApiResponse } from '@/types'
-import FixturesDisplay from '@/components/FixturesDisplay/FixturesDisplay'
+} from '@src/constants/restApi'
+import type { GetCompetitionMatchesApiResponse } from '@src/types'
+import FixturesDisplay from '@src/components/FixturesDisplay/FixturesDisplay'
 import {
   GRID_GAP_LG,
   GRID_GAP_MD,
   GRID_ITEM_BORDER_WIDTH,
   GRID_ITEM_PADDING_LG,
   GRID_ITEM_PADDING_MD
-} from '@/constants/layout'
-import { useMediaQuery } from '@/hooks/useMediaQuery'
+} from '@src/constants/layout'
+import { useMediaQuery } from '@src/hooks/useMediaQuery'
 
 const gridItemClassName = `flex justify-center items-center p-${GRID_ITEM_PADDING_MD} lg:p-${GRID_ITEM_PADDING_LG} bg-cerulean/20 border-6 border-solid border-cerulean/50`
 

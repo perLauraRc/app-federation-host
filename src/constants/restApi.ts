@@ -1,4 +1,4 @@
-import type { CompetitionId, MatchStatus } from '@/types'
+import type { CompetitionId, MatchStatus } from '@src/types'
 
 // Free Football API https://www.football-data.org/
 // Documentation https://www.football-data.org/documentation/quickstart
