@@ -4,14 +4,15 @@
 import { defineConfig } from 'vite'
 import federation from '@originjs/vite-plugin-federation'
 import react from '@vitejs/plugin-react-swc'
-import tsconfigPaths from 'vite-tsconfig-paths'
+// import tsconfigPaths from 'vite-tsconfig-paths'
 import tailwindcss from '@tailwindcss/vite'
 import { REMOTE_URL, REMOTE_PORT, HOSTNAME } from './constants'
+import path from 'node:path'
 
 export default defineConfig({
   plugins: [
     react(),
-    tsconfigPaths(),
+    // tsconfigPaths(),
     tailwindcss(),
     federation({
       name: 'host-app',
@@ -25,6 +26,11 @@ export default defineConfig({
       shared: ['react', 'react-dom']
     })
   ],
+  resolve: {
+    alias: {
+      '@src': path.resolve(__dirname, './src')
+    }
+  },
   // test: {
   //   globals: true,
   //   environment: 'happy-dom',

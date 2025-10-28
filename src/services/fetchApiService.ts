@@ -1,5 +1,5 @@
-import { apiToken, urlPathnameBase } from '@/constants/restApi'
-import type { GetCompetitionMatchesApiResponse, APIError } from '@/types'
+import { apiToken, urlPathnameBase } from '@src/constants/restApi'
+import type { GetCompetitionMatchesApiResponse, APIError } from '@src/types'
 
 const apiURL = (pathSegments: string) =>
   `/api${urlPathnameBase}/${pathSegments}`

@@ -1,4 +1,4 @@
-import type { Match } from '@/types'
+import type { Match } from '@src/types'
 
 interface FixturesCarouselProps {
   // Auto-advance interval in ms (disabled if 0)
