@@ -4,14 +4,16 @@ This document provides instructions and guidelines for GitHub Copilot when worki
 
 ## Project Overview
 
-This is the host application for a micro-frontend architecture built with:
+This is the micro-frontend host application that federates a remote app for micro-frontend composition. Its tech stack includes:
 
 - Vite
 - React 18
 - TypeScript
+- Zustand for state management
 - TailwindCSS 4
 - Module Federation
-- Vitest and React Testing Library for testing
+- Vitest and React Testing Library for unit testing
+- Playwright for e2e testing
 
 ## Coding Standards
 
@@ -23,7 +25,7 @@ This is the host application for a micro-frontend architecture built with:
 - Use interface for object types
 - Use type for union types or simple aliases
 - Use meaningful type names that describe the data
-- Sort alphabetically type and interface props
+- Sort type and interface props ascendingly alphabetically
 
 ### React
 
@@ -31,6 +33,7 @@ This is the host application for a micro-frontend architecture built with:
 - Use TypeScript generics for reusable components
 - Implement error boundaries where necessary
 - Follow React 18 best practices
+- Import assets, components, constants, hooks, icons, services, types, utils using @src/\*/ aliases
 - Use proper component file structure:
 
   ```
@@ -41,12 +44,12 @@ This is the host application for a micro-frontend architecture built with:
       ComponentName.styles.css
   ```
 
-  - Automatically update the index.ts file in the components folder to export new added components
+  - Automatically update the index.ts file in the src/components folder to export new added components
 
 ### Type Safety
 
 •⁠ ⁠Use TypeScript types/interfaces
-•⁠ ⁠Prefer type annotations for component props
+•⁠ ⁠Prefer interface annotations for component props
 •⁠ ⁠Do not use React.FC for functional components, use Direct Props Annotation instead
 
 ### Styling
@@ -54,7 +57,7 @@ This is the host application for a micro-frontend architecture built with:
 - Use TailwindCSS utility classes
 - Follow mobile-first responsive design
 - Use semantic class names
-- Avoid inline styles
+- Avoid inline styles, only use them for dynamic values
 - Use CSS modules when custom CSS is necessary
 
 ### Testing
@@ -71,6 +74,24 @@ This is the host application for a micro-frontend architecture built with:
 - Use camelCase for utility files
 - Use kebab-case for configuration files
 - Test files should be named `test.tsx` or `ComponentName.test.tsx`
+
+### Components
+
+- Use PascalCase for component names
+- Named export (not default)
+- Arrow function with implicit return
+- Destructured props ({ color, size }: IconProps)
+
+### Icons
+
+- Use PascalCase for icon names
+- Named export (not default)
+- Arrow function with implicit return
+- Use 'IconProps' interface from types for props
+- Destructured props ({ color, size }: IconProps)
+- No default values
+- Consistent SVG structure (fill, height, viewBox, width, xmlns)
+- Use SVG fill attribute for coloring
 
 ### Import Order
 
@@ -140,11 +161,16 @@ import './styles.css'
 
 ```
 src/
-  components/     # React components
   assets/         # Static assets
-  types/          # TypeScript types/interfaces
+  components/     # React components
+  constants/      # Application constants
+  hooks/          # Custom React hooks
+  icons/          # Icon components with SVG customization
+  services/       # API and data services
+  tests/          # Test utils for unit testing
+  types/          # TypeScript types/interfaces and type declarations for modules
   utils/          # Utility functions
-  __tests__/      # Test files
+  store/         # State management (e.g., Redux, Zustand)
 ```
 
 ## Dependencies
