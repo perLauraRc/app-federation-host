@@ -4,7 +4,7 @@ import CircleProgress from 'remoteApp/CircleProgress'
 import FixturesCarousel from 'remoteApp/FixturesCarousel'
 import ErrorPage from 'remoteApp/ErrorPage'
 
-import type { APIError, Match } from '@src/types'
+import type { APIError, FixtureFilter, Match } from '@src/types'
 
 import { classNames } from '@src/utils/classNames'
 import { fetchRequest } from '@src/services/fetchApiService'
@@ -23,10 +23,12 @@ import {
   GRID_ITEM_PADDING_MD
 } from '@src/constants/layout'
 import { useMediaQuery } from '@src/hooks/useMediaQuery'
+import { useUserStore } from '../../../../store/store'
 
 const gridItemClassName = `flex justify-center items-center p-${GRID_ITEM_PADDING_MD} lg:p-${GRID_ITEM_PADDING_LG} bg-cerulean/20 border-6 border-solid border-cerulean/50`
 
 const Home = () => {
+  const { wishlist, addToWishlist, removeFromWishlist } = useUserStore()
   const isLGMediaQuery = useMediaQuery('(min-width: 1024px)')
   const [competitionProgress, setCompetitionProgress] = useState<
     GetCompetitionMatchesApiResponse['resultSet'] | null
@@ -59,7 +61,12 @@ const Home = () => {
         ])
         setCompetitionProgress(data.resultSet)
         setCompetitionData(data.competition)
-        setMatchesData(data.matches)
+        setMatchesData(
+          data.matches?.map((match) => ({
+            ...match
+            // isFavorite: getRandomBoolean()
+          })) || null
+        )
         setError(null)
       } catch (error) {
         setMatchesData(null)
@@ -94,7 +101,25 @@ const Home = () => {
   useEffect(() => {
     const observeTarget = gridItemSquareRef.current
     if (!observeTarget || !matchesData) return
-
+    // console.log('matchesData updated: ', JSON.stringify(matchesData, null, 2))
+    console.log(
+      'FixturesCarousel mounted with favorited matches: ',
+      JSON.stringify(
+        matchesData
+          ?.map((match) => {
+            if (match.isFavorite)
+              return {
+                homeTeam: match.homeTeam.shortName,
+                awayTeam: match.awayTeam.shortName,
+                isFavorite: match.isFavorite
+              }
+            return null
+          })
+          .filter((match) => match !== null),
+        null,
+        2
+      )
+    )
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
         const { height: gridItemSquareHeight } = entry.contentRect
@@ -125,6 +150,24 @@ const Home = () => {
     return () => resizeObserver.disconnect()
   }, [matchesData, isLGMediaQuery, gridItemBorderBoxPaddingPlusBorder])
 
+  const selectFixture = (fixture: Match & FixtureFilter) => {
+    const wishlistContainsFixture = wishlist.has(fixture.id)
+    if (wishlistContainsFixture) {
+      removeFromWishlist(fixture.id)
+    } else {
+      addToWishlist(fixture)
+    }
+    setMatchesData((prevMatchesData) =>
+      prevMatchesData
+        ? prevMatchesData.map((match: Match & FixtureFilter) =>
+            match.id === fixture.id
+              ? { ...match, isFavorite: !wishlistContainsFixture }
+              : match
+          )
+        : null
+    )
+  }
+
   if (error) {
     return (
       <ErrorPage
@@ -140,7 +183,7 @@ const Home = () => {
 
   return (
     <div
-      className={`mx-auto max-w-4xl${GRID_ITEM_PADDING_MD} lg:lg:max-w-7xl${GRID_ITEM_PADDING_LG}`}
+      className={`mx-auto max-w-4xl${GRID_ITEM_PADDING_MD} lg:max-w-7xl${GRID_ITEM_PADDING_LG}`}
       data-testid="home-page"
     >
       <h1 className="mt-2 max-w-(--breakpoint-sm) text-[2.5rem]/13 tracking-tight text-pretty lg:text-[5rem]/20">
@@ -173,7 +216,8 @@ const Home = () => {
           >
             {matchesData ? (
               <FixturesCarousel
-                fixtures={matchesData as Match[]}
+                fixtures={matchesData}
+                onSelect={selectFixture}
                 visibleCount={1}
               />
             ) : (
@@ -255,9 +299,7 @@ const Home = () => {
               {matchesData ? (
                 <FixturesDisplay
                   fixtures={matchesData.filter(
-                    (
-                      match: GetCompetitionMatchesApiResponse['matches'][number]
-                    ) =>
+                    (match: Match & FixtureFilter) =>
                       match.status === MatchStatuses.TIMED ||
                       match.status === MatchStatuses.SCHEDULED ||
                       match.status === MatchStatuses.IN_PLAY ||

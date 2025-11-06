@@ -3,14 +3,16 @@ import type { Match } from '../src/types'
 
 export interface StoreState {
   fixtures: number
+  notifications: Map<number, string>
   wishlist: Map<number, Match>
   emptyWishlist: () => void
   addToWishlist: (fixture: Match) => void
   removeFromWishlist: (fixtureId: number) => void
 }
 
-export const useStore = create<StoreState>((set) => ({
+export const useUserStore = create<StoreState>((set) => ({
   fixtures: 0,
+  notifications: new Map<number, string>(),
   wishlist: new Map<number, Match>(),
   emptyWishlist: () => set({ wishlist: new Map<number, Match>() }),
   addToWishlist: (fixture: Match) =>

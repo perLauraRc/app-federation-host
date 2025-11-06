@@ -1,3 +1,4 @@
+import type { FixtureFilter } from '../filters'
 import type { Competition } from './competition'
 import type { Match } from './match'
 
@@ -13,6 +14,6 @@ export type GetCompetitionMatchesApiResponse = {
   filters: {
     season: number
   }
-  matches: Match[]
+  matches: (Match & FixtureFilter)[] | null
   resultSet: ResultSet
 }

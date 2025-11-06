@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import type { GetCompetitionMatchesApiResponse } from '@src/types'
+import type { FixtureFilter, Match } from '@src/types'
 
 export interface FixturesDisplayProps {
-  fixtures: GetCompetitionMatchesApiResponse['matches']
+  fixtures: (Match & FixtureFilter)[]
 }
 
 const FixturesDisplay = ({ fixtures }: FixturesDisplayProps) => {
@@ -14,37 +13,36 @@ const FixturesDisplay = ({ fixtures }: FixturesDisplayProps) => {
       ) : (
         <ul className="bg-violet rounded-[0.5rem] p-6 lg:p-8">
           {fixtures.length &&
-            fixtures.map(
-              (match: GetCompetitionMatchesApiResponse['matches'][number]) => {
-                const {
-                  area,
-                  competition,
-                  awayTeam,
-                  group,
-                  homeTeam,
-                  id,
-                  lastUpdated,
-                  matchday,
-                  odds,
-                  referees,
-                  score,
-                  season,
-                  stage,
-                  status,
-                  utcDate
-                } = match
+            fixtures.map((match: Match & FixtureFilter) => {
+              const {
+                // area,
+                competition,
+                awayTeam,
+                // group,
+                homeTeam,
+                id
+                // isFavorite,
+                // lastUpdated,
+                // matchday,
+                // odds,
+                // referees,
+                // score,
+                // season,
+                // stage,
+                // status,
+                // utcDate
+              } = match
 
-                return (
-                  <li
-                    key={id}
-                    className="border-b border-gray-100 text-sm sm:text-base"
-                  >
-                    {competition.emblem}
-                    {homeTeam.tla} VS {awayTeam.tla}
-                  </li>
-                )
-              }
-            )}
+              return (
+                <li
+                  key={id}
+                  className="border-b border-gray-100 text-sm sm:text-base"
+                >
+                  {competition.emblem}
+                  {homeTeam.tla} VS {awayTeam.tla}
+                </li>
+              )
+            })}
         </ul>
       )}
     </div>
