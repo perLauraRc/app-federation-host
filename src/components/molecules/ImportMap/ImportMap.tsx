@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 type ConfettiFunction = (options?: unknown) => void
 
-const ImportMap = () => {
+export const ImportMap = () => {
   const [confettiFn, setConfettiFn] = useState<ConfettiFunction | null>(null)
 
   useEffect(() => {
@@ -40,5 +40,3 @@ const ImportMap = () => {
     ></div>
   )
 }
-
-export default ImportMap

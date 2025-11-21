@@ -24,6 +24,19 @@
   /* --drop-shadow-svg: drop-shadow-[0 0 2rem rgba(197, 213, 22, 0.35)] p-8; /* NOT WORKING */
   /* PAGE LAYOUT */
   --padding-w-page: 2rem;
+  /* ANIMATIONS */
+  --animate-indeterminate: indeterminate 1s linear infinite;
+  @keyframes indeterminate {
+    0% {
+      transform: translateX(0) scaleX(0);
+    }
+    40% {
+      transform: translateX(0) scaleX(0.4);
+    }
+    100% {
+      transform: translateX(100%) scaleX(0.5);
+    }
+  }
 }
 
 :root {

@@ -1,10 +1,16 @@
 import { useEffect, useRef, useState } from 'react'
+import { useQuery } from '@apollo/client/react'
 
 import CircleProgress from 'remoteApp/CircleProgress'
 import FixturesCarousel from 'remoteApp/FixturesCarousel'
 import ErrorPage from 'remoteApp/ErrorPage'
 
-import type { APIError, Match } from '@/types'
+import type {
+  APIError,
+  Match,
+  GetPostsQueryResponse,
+  GetPostsQueryVariables
+} from '@/types'
 
 import { classNames } from '@/utils/classNames'
 import { fetchRequest } from '@/services/fetchApiService'
@@ -14,7 +20,6 @@ import {
   MatchStatuses
 } from '@/constants/restApi'
 import type { GetCompetitionMatchesApiResponse } from '@/types'
-import FixturesDisplay from '@/components/FixturesDisplay/FixturesDisplay'
 import {
   GRID_GAP_LG,
   GRID_GAP_MD,
@@ -23,11 +28,32 @@ import {
   GRID_ITEM_PADDING_MD
 } from '@/constants/layout'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
+import { GET_POSTS, GET_POSTS_TABLE } from '@/types/graphQL/queries'
+import { FixturesDisplay } from '@/components/FixturesDisplay/FixturesDisplay'
+import { BrandHeading, Posts } from '@/components'
 
-const gridItemClassName = `flex justify-center items-center p-${GRID_ITEM_PADDING_MD} lg:p-${GRID_ITEM_PADDING_LG} bg-cerulean/20 border-6 border-solid border-cerulean/50`
+const gridItemClassName = `flex justify-center items-center p-${GRID_ITEM_PADDING_MD} lg:p-${GRID_ITEM_PADDING_LG} border-cerulean/50 bg-cerulean/20 border-6`
 
-const Home = () => {
+export const Home = () => {
   const isLGMediaQuery = useMediaQuery('(min-width: 1024px)')
+  // GraphQL query for posts
+  const {
+    data: postsData,
+    dataState, // "empty" | "complete" | "streaming"
+    error: postsQueryError,
+    loading: loadingPosts
+  } = useQuery<GetPostsQueryResponse, GetPostsQueryVariables>(GET_POSTS_TABLE, {
+    variables: {
+      options: {
+        paginate: {
+          page: 1,
+          limit: 100
+        }
+      }
+    }
+  })
+  console.log(' dataState: ', dataState)
+  console.log(' postsData: ', postsData)
   const [competitionProgress, setCompetitionProgress] = useState<
     GetCompetitionMatchesApiResponse['resultSet'] | null
   >(null)
@@ -143,18 +169,7 @@ const Home = () => {
       className={`mx-auto max-w-4xl${GRID_ITEM_PADDING_MD} lg:lg:max-w-7xl${GRID_ITEM_PADDING_LG}`}
       data-testid="home-page"
     >
-      <h1 className="mt-2 max-w-(--breakpoint-sm) text-[2.5rem]/13 tracking-tight text-pretty lg:text-[5rem]/20">
-        <span className="bg-tiktok-red relative -inset-1 inline-block -skew-x-4 -skew-y-5 pt-2 pr-4 pb-2 pl-4 font-[600]">
-          TheX
-          <span className="absolute top-1 left-1 z-2 inline-block pt-2 pr-4 pb-2 pl-4 font-[600] text-white">
-            TheX
-          </span>
-          <span className="absolute top-0 left-0 z-3 inline-block pt-2 pr-4 pb-2 pl-4 font-[600] text-black">
-            TheX
-          </span>
-        </span>
-      </h1>
-
+      <BrandHeading />
       {loading ? (
         <div className="p-8 text-9xl text-white">Loading matchesData...</div>
       ) : (
@@ -202,8 +217,22 @@ const Home = () => {
               />
             </div>
           )}
-          <div className={classNames(gridItemClassName, 'aspect-square')}>
-            <p>This is box B</p>
+          <div
+            className={classNames(
+              gridItemClassName,
+              'col-span-2 lg:col-span-1'
+            )}
+          >
+            {postsQueryError ? (
+              <div className="text-white">
+                <p>Error loading posts: {postsQueryError.message}</p>
+              </div>
+            ) : (
+              <Posts
+                loading={loadingPosts}
+                posts={postsData?.posts.data || []}
+              />
+            )}
           </div>
           <div
             className={classNames(
@@ -379,5 +408,3 @@ const Home = () => {
     </div>
   )
 }
-
-export default Home

@@ -21,18 +21,18 @@ export const fetchRequest = async (pathSegments: string[]) => {
     // Custom error messages for 404 and 500 HTTP status codes
     if (response.status === 404)
       throw {
-        status: 500,
-        message: 'API request failed with status 404, Not found'
+        status: response.status,
+        message: 'API request failed with status 404: Not found'
       } as APIError
     if (response.status === 500) {
       throw {
-        status: 500,
-        message: 'API request failed with status 500, internal server error'
+        status: response.status,
+        message: 'API request failed with status 500: Internal server error'
       } as APIError
     }
     // Custom error messages other status codes
     throw {
-      status: 500,
+      status: response.status,
       message: `API request failed with status ${response.status}`
     } as APIError
   }
